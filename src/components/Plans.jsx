@@ -1,38 +1,13 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import useActivatePlan from '../Hooks/useActivatePlan';
+import useDeactivatePlan from '../Hooks/useDeactivatePlan';
 
 const Plans = ({ plans }) => {
-  const [activePlan, setActivePlan] = useState(null);
-  const [activationStatus, setActivationStatus] = useState(null);
-
-  const handleActivatePlan = async (planId) => {
-    try {
-      const response = await axios.post('http://localhost:8080/activatePlan', { planId });
-      const { activationId, startTime } = response.data;
-      setActivePlan({ id: activationId, plan_id: planId, start_time: startTime });
-      setActivationStatus('Plan activated successfully');
-    } catch (error) {
-      console.error('Error activating plan:', error);
-      setActivationStatus('Failed to activate plan');
-    }
-  };
-
-  const handleDeactivatePlan = async () => {
-    if (activePlan) {
-      try {
-        const endTime = new Date().toISOString();
-        await axios.post('http://localhost:8080/deactivatePlan', { activationId: activePlan.id, endTime });
-        setActivePlan(null);
-        setActivationStatus('Plan deactivated successfully');
-      } catch (error) {
-        console.error('Error deactivating plan:', error);
-        setActivationStatus('Failed to deactivate plan');
-      }
-    } else {
-      alert('No plan currently activated');
-    }
-  };
+  const { activePlan: activateActivePlan, activationStatus: activateActivationStatus, handleActivatePlan } = useActivatePlan();
+  const { activePlan: deactivateActivePlan, activationStatus: deactivateActivationStatus, handleDeactivatePlan } = useDeactivatePlan();
+  const activePlan = activateActivePlan || deactivateActivePlan;
+  const activationStatus = activateActivationStatus || deactivateActivationStatus;
 
   const getFormattedTime = (seconds) => {
     const hours = Math.floor(seconds / 3600);

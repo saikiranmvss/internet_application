@@ -40,7 +40,7 @@ app.post('/activatePlan', async (req, res) => {
         res.status(500).json({ error: 'Failed to activate plan' });
       } else {
         const activationId = result.insertId;
-        const startTime = new Date().toISOString(); // Get current time
+        const startTime = new Date().toISOString(); 
         res.status(200).json({ message: 'Plan activated successfully', activationId, startTime });
       }
     });
@@ -60,7 +60,7 @@ app.post('/deactivatePlan', async (req, res) => {
         console.error('Error deactivating plan:', err);
         res.status(500).json({ error: 'Failed to deactivate plan' });
       } else {
-        const endTime = new Date().toISOString(); // Get current time
+        const endTime = new Date().toISOString(); 
         res.status(200).json({ message: 'Plan deactivated successfully', endTime });
       }
     });

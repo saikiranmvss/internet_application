@@ -33,7 +33,6 @@ app.get('/getplans', async (req, res) => {
 app.post('/activatePlan', async (req, res) => {
   const { planId } = req.body;
   try {
-    // Insert new activation record
     const insertSql = 'INSERT INTO plan_activations (plan_id, start_time) VALUES (?, NOW())';
     db.query(insertSql, [planId], (err, result) => {
       if (err) {
@@ -50,11 +49,9 @@ app.post('/activatePlan', async (req, res) => {
   }
 });
 
-// Endpoint to handle plan deactivation
 app.post('/deactivatePlan', async (req, res) => {
   const { activationId } = req.body;
   try {
-    // Update existing activation record with end time
     const updateSql = 'UPDATE plan_activations SET end_time = NOW() WHERE id = ?';
     db.query(updateSql, [activationId], (err, result) => {
       if (err) {

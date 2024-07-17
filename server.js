@@ -40,7 +40,8 @@ app.post('/activatePlan', async (req, res) => {
         res.status(500).json({ error: 'Failed to activate plan' });
       } else {
         const activationId = result.insertId;
-        res.status(200).json({ message: 'Plan activated successfully', activationId });
+        const startTime = new Date().toISOString(); // Get current time
+        res.status(200).json({ message: 'Plan activated successfully', activationId, startTime });
       }
     });
   } catch (error) {
@@ -48,6 +49,7 @@ app.post('/activatePlan', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
 
 app.post('/deactivatePlan', async (req, res) => {
   const { activationId } = req.body;
@@ -58,7 +60,8 @@ app.post('/deactivatePlan', async (req, res) => {
         console.error('Error deactivating plan:', err);
         res.status(500).json({ error: 'Failed to deactivate plan' });
       } else {
-        res.status(200).json({ message: 'Plan deactivated successfully' });
+        const endTime = new Date().toISOString(); // Get current time
+        res.status(200).json({ message: 'Plan deactivated successfully', endTime });
       }
     });
   } catch (error) {

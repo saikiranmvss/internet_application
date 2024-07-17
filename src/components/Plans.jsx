@@ -4,27 +4,10 @@ import useActivatePlan from '../Hooks/useActivatePlan';
 import useDeactivatePlan from '../Hooks/useDeactivatePlan';
 
 const Plans = ({ plans }) => {
-  const { activePlan: activateActivePlan, activationStatus: activateActivationStatus, handleActivatePlan } = useActivatePlan();
-  const { activePlan: deactivateActivePlan, activationStatus: deactivateActivationStatus, handleDeactivatePlan } = useDeactivatePlan();
-  const activePlan = activateActivePlan || deactivateActivePlan;
+  const { activePlan: activateActivePlan, activationStatus: activateActivationStatus, handleActivatePlan, setActivePlan } = useActivatePlan();
+  const { activationStatus: deactivateActivationStatus, handleDeactivatePlan } = useDeactivatePlan(setActivePlan); 
+  const activePlan = activateActivePlan || null;
   const activationStatus = activateActivationStatus || deactivateActivationStatus;
-
-  const getFormattedTime = (seconds) => {
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = seconds % 60;
-    return `${hours > 0 ? hours + 'h ' : ''}${minutes}m ${remainingSeconds}s`;
-  };
-
-  const calculateTimeUsed = () => {
-    if (activePlan && activePlan.start_time) {
-      const startTime = new Date(activePlan.start_time).getTime();
-      const currentTime = Date.now();
-      const timeDifferenceInSeconds = Math.floor((currentTime - startTime) / 1000);
-      return getFormattedTime(timeDifferenceInSeconds);
-    }
-    return '';
-  };
 
   return (
     <div className="container mt-5">
@@ -36,11 +19,12 @@ const Plans = ({ plans }) => {
       )}
       <div className="row justify-content-center">
         {plans.map((plan) => {
+            console.log(activePlan);
           const isActive = activePlan && activePlan.plan_id === plan.id;
 
           return (
             <div key={plan.id} className="col-md-4 mb-4">
-              <div className="card h-100">
+              <div className="card" style={{height:'300px'}}>
                 <div className="card-body d-flex flex-column">
                   <h5 className="card-title">{plan.name}</h5>
                   <p className="card-text">{plan.description}</p>
@@ -60,18 +44,18 @@ const Plans = ({ plans }) => {
                     {isActive && (
                       <button
                         className="btn btn-danger mr-2"
-                        onClick={handleDeactivatePlan}
+                        onClick={() => handleDeactivatePlan(activePlan)}
                         disabled={activePlan === null}
                         style={{ position: 'absolute', bottom: '10px', right: '10px' }}
                       >
                         Deactivate
                       </button>
                     )}
-                    {isActive && (
+                    {isActive && activePlan.start_time && (
                       <p className="mt-2">Started: {new Date(activePlan.start_time).toLocaleTimeString()}</p>
                     )}
-                    {isActive && (
-                      <p>Time used: {calculateTimeUsed()}</p>
+                    {isActive && activePlan.end_time && (
+                      <p className="mt-2">Ended: {new Date(activePlan.end_time).toLocaleTimeString()}</p>
                     )}
                   </div>
                 </div>

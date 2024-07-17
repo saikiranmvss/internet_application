@@ -17,7 +17,7 @@ const useActivatePlan = () => {
     }
   };
 
-  return { activePlan, activationStatus, handleActivatePlan };
+  return { activePlan, activationStatus, handleActivatePlan, setActivePlan }; 
 };
 
 export default useActivatePlan;

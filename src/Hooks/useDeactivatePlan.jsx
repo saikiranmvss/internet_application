@@ -1,17 +1,16 @@
 import { useState } from 'react';
 import axios from 'axios';
 
-const useDeactivatePlan = (setActivePlan) => {
+const useDeactivatePlan = (setActivePlan) => { 
   const [activationStatus, setActivationStatus] = useState(null);
 
   const handleDeactivatePlan = async (activePlan) => {
     if (activePlan) {
       try {
         const endTime = new Date().toISOString();
-        const response = await axios.post('http://localhost:8080/deactivatePlan', { activationId: activePlan.id, endTime });
-        const { message, endTime: deactivatedEndTime } = response.data; 
-        setActivePlan(prevPlan => ({ ...prevPlan, end_time: deactivatedEndTime })); 
-        setActivationStatus(message);
+        await axios.post('http://localhost:8080/deactivatePlan', { activationId: activePlan.id, endTime });
+        setActivePlan(null); 
+        setActivationStatus('Plan deactivated successfully');
       } catch (error) {
         console.error('Error deactivating plan:', error);
         setActivationStatus('Failed to deactivate plan');

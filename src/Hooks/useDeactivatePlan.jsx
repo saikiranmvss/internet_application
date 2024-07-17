@@ -7,11 +7,11 @@ const useDeactivatePlan = (setActivePlan) => {
   const handleDeactivatePlan = async (activePlan) => {
     if (activePlan) {
       try {
-        const endTimeResponse = await axios.post('http://localhost:8080/deactivatePlan', { activationId: activePlan.id });
-        const { endTime } = endTimeResponse.data; 
-        setActivePlan(null);
-        setActivationStatus('Plan deactivated successfully');
-        console.log('EndTime:', endTime); 
+        const endTime = new Date().toISOString();
+        const response = await axios.post('http://localhost:8080/deactivatePlan', { activationId: activePlan.id, endTime });
+        const { message, endTime: deactivatedEndTime } = response.data; 
+        setActivePlan(prevPlan => ({ ...prevPlan, end_time: deactivatedEndTime })); 
+        setActivationStatus(message);
       } catch (error) {
         console.error('Error deactivating plan:', error);
         setActivationStatus('Failed to deactivate plan');
